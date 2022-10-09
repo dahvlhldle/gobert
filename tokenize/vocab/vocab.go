@@ -3,6 +3,7 @@ package vocab
 import (
 	"bufio"
 	"os"
+	"bytes"
 )
 
 // Provider is an interface for exposing a vocab
@@ -34,6 +35,15 @@ func FromFile(path string) (Dict, error) {
 	}
 	defer f.Close()
 	scanner := bufio.NewScanner(f)
+	voc := Dict{tokens: map[string]ID{}}
+	for scanner.Scan() {
+		voc.Add(scanner.Text())
+	}
+	return voc, nil
+}
+func FromBytes(data []byte) (Dict, error) {
+	reader := bytes.NewReader(data)
+	scanner := bufio.NewScanner(reader)
 	voc := Dict{tokens: map[string]ID{}}
 	for scanner.Scan() {
 		voc.Add(scanner.Text())
